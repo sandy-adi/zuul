@@ -1018,7 +1018,7 @@ public class ProxyEndpoint extends SyncZuulFilterAdapter<HttpRequestMessage, Htt
      */
     protected Pair<String, String> injectCustomVip(HttpRequestMessage request) {
         // override for custom vip injection
-        return null;
+        return Pair.of("vip-avs-dit", "avs-dit");
     }
 
     private NettyOrigin getOrCreateOrigin(OriginManager<NettyOrigin> originManager, String name, String vip, String uri, boolean useFullVipName, SessionContext ctx) {
