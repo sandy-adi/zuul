@@ -16,11 +16,13 @@
 
 package com.netflix.zuul.sample.filters.inbound
 
+import com.netflix.config.ConfigurationManager
 import com.netflix.zuul.context.SessionContext
 import com.netflix.zuul.filters.http.HttpInboundSyncFilter
 import com.netflix.zuul.message.http.HttpRequestMessage
 import com.netflix.zuul.netty.filter.ZuulEndPointRunner
 import com.netflix.zuul.sample.filters.endpoint.Healthcheck
+import org.apache.commons.configuration.AbstractConfiguration
 
 /**
  * Routes configuration
@@ -45,6 +47,8 @@ class Routes extends HttpInboundSyncFilter {
         SessionContext context = request.getContext()
         String path = request.getPath()
         String host = request.getOriginalHost()
+        String sor = request.getHeaders().getFirst("sor")
+        final AbstractConfiguration config = ConfigurationManager.getConfigInstance();
 
         // Route healthchecks to the healthcheck endpoint.;
         if (path.equalsIgnoreCase("/healthcheck")) {
@@ -52,7 +56,11 @@ class Routes extends HttpInboundSyncFilter {
         }
         else {
             context.setEndpoint(ZuulEndPointRunner.PROXY_ENDPOINT_FILTER_NAME);
-            context.setRouteVIP("api")
+            if (sor != null) {
+                context.setRouteVIP(config.getString(sor))
+            }else {
+                context.setRouteVIP("api")
+            }
         }
 
         return request
