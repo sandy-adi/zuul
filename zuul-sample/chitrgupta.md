@@ -125,17 +125,25 @@ curl -X POST \
 
 - Checkout [Netflix/zuul/chitragupta](https://github.com/sandy-adi/zuul/tree/chitragupta) branch.
 - `application.properties` changes to notice in the sample app
-   - ```eureka.shouldUseDns=false
-     eureka.eurekaServer.context=eureka/v2
-     eureka.eurekaServer.domainName=myHostName.local
-     eureka.eurekaServer.gzipContent=true
-     eureka.serviceUrl.default=http://${eureka.eurekaServer.domainName}:8080/${eureka.eurekaServer.context}```
-   - ```mockbin.ribbon.NIWSServerListClassName=com.netflix.niws.loadbalancer.DiscoveryEnabledNIWSServerList
+   - ```
+        eureka.shouldUseDns=false
+        eureka.eurekaServer.context=eureka/v2
+        eureka.eurekaServer.domainName=myHostName.local
+        eureka.eurekaServer.gzipContent=true
+        eureka.serviceUrl.default=http://${eureka.eurekaServer.domainName}:8080/${eureka.eurekaServer.context}
+     ```
+     
+   - ```
+        mockbin.ribbon.NIWSServerListClassName=com.netflix.niws.loadbalancer.DiscoveryEnabledNIWSServerList
         mockbin.ribbon.DeploymentContextBasedVipAddresses=vip_mockbin_local
         httpbin.ribbon.NIWSServerListClassName=com.netflix.niws.loadbalancer.DiscoveryEnabledNIWSServerList
-        httpbin.ribbon.DeploymentContextBasedVipAddresses=vip_httpbin_local```
-   - ```myMockBin=mockbin
-        myHttpBin=httpbin```
+        httpbin.ribbon.DeploymentContextBasedVipAddresses=vip_httpbin_local
+     ```
+        
+   - ```
+        myMockBin=mockbin
+        myHttpBin=httpbin
+     ```
 
 The last two properties this is just a way to manage a mapping between headers and the actual vip. `myMockBin` and 
 `myHttpBin` will be the header values in the request which will then be mapped to the vip for routing.
