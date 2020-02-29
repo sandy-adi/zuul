@@ -24,6 +24,8 @@ public interface ConnectionPoolConfig {
     /* Origin name from connection pool */
     String getOriginName();
 
+    String getSNI();
+
     /* Max number of requests per connection before it needs to be recycled */
     int getMaxRequestsPerConnection();
 
@@ -45,6 +47,8 @@ public interface ConnectionPoolConfig {
     int getNettyWriteBufferHighWaterMark();
 
     int getNettyWriteBufferLowWaterMark();
+
+    int getSecurePort();
 
     boolean getTcpKeepAlive();
 

@@ -20,6 +20,7 @@ import com.netflix.client.config.IClientConfig;
 import com.netflix.client.config.IClientConfigKey;
 import com.netflix.config.CachedDynamicBooleanProperty;
 import com.netflix.config.CachedDynamicIntProperty;
+import com.netflix.config.DynamicStringProperty;
 
 /**
  * Created by saroskar on 3/24/16.
@@ -32,6 +33,7 @@ public class ConnectionPoolConfigImpl implements ConnectionPoolConfig {
     private static final int DEFAULT_MAX_CONNS_PER_HOST = 50;
 
     private final String originName;
+    private final String sni;
     private final IClientConfig clientConfig;
 
     private final CachedDynamicIntProperty MAX_REQUESTS_PER_CONNECTION;
@@ -48,6 +50,8 @@ public class ConnectionPoolConfigImpl implements ConnectionPoolConfig {
         this.originName = originName;
         this.clientConfig = clientConfig;
 
+        this.sni = new DynamicStringProperty(originName+".ribbon.SNI", null).getValue();
+
         this.MAX_REQUESTS_PER_CONNECTION = new CachedDynamicIntProperty(originName+".netty.client.maxRequestsPerConnection", 1000);
 
         // NOTE that the each eventloop has it's own connection pool per host, and this is applied per event-loop.
@@ -63,6 +67,11 @@ public class ConnectionPoolConfigImpl implements ConnectionPoolConfig {
     @Override
     public String getOriginName() {
         return originName;
+    }
+
+    @Override
+    public String getSNI() {
+        return sni;
     }
 
     @Override
@@ -120,6 +129,11 @@ public class ConnectionPoolConfigImpl implements ConnectionPoolConfig {
     @Override
     public int getNettyWriteBufferLowWaterMark() {
         return WRITE_BUFFER_LOW_WATER_MARK.get();
+    }
+
+    @Override
+    public int getSecurePort() {
+        return clientConfig.getPropertyAsInteger(IClientConfigKey.Keys.SecurePort, 443);
     }
 
     @Override

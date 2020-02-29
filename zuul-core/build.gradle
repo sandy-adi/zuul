@@ -57,6 +57,15 @@ dependencies {
     testRuntime 'org.slf4j:slf4j-simple:1.7.29'
 }
 
+publishing {
+    repositories {
+        maven {
+            // change to point to your repo, e.g. http://my.org/repo
+            url = "${artifactory_contextUrl}/gradle-dev-local"
+        }
+    }
+}
+
 jar {
     from sourceSets.main.allGroovy
 }

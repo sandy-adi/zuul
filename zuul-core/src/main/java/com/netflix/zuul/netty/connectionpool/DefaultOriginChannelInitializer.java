@@ -29,6 +29,8 @@ import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslHandler;
+
 
 import static com.netflix.zuul.netty.server.BaseZuulChannelInitializer.HTTP_CODEC_HANDLER_NAME;
 
@@ -61,8 +63,16 @@ public class DefaultOriginChannelInitializer extends OriginChannelInitializer {
         pipeline.addLast(new PassportStateOriginHandler.InboundHandler());
         pipeline.addLast(new PassportStateOriginHandler.OutboundHandler());
 
+        SslHandler sslHandler = null;
         if (connectionPoolConfig.isSecure()) {
-            pipeline.addLast("ssl", sslContext.newHandler(ch.alloc()));
+            String sni = connectionPoolConfig.getSNI();
+            if (sni != null) {
+                int securePort = connectionPoolConfig.getSecurePort();
+                sslHandler = sslContext.newHandler(ch.alloc(), sni, securePort);
+            }else {
+                sslHandler = sslContext.newHandler(ch.alloc());
+            }
+            pipeline.addLast("ssl", sslHandler);
         }
 
         pipeline.addLast(HTTP_CODEC_HANDLER_NAME, new HttpClientCodec(

@@ -69,6 +69,7 @@ import com.netflix.zuul.util.ProxyUtils;
 import com.netflix.zuul.util.VipUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
@@ -76,6 +77,7 @@ import io.netty.handler.codec.http.DefaultLastHttpContent;
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.LastHttpContent;
+import io.netty.handler.ssl.SslHandler;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
@@ -583,6 +585,9 @@ public class ProxyEndpoint extends SyncZuulFilterAdapter<HttpRequestMessage, Htt
         preWriteToOrigin(chosenServer.get(), zuulRequest);
 
         final ChannelPipeline pipeline = ch.pipeline();
+        if (conn.getConfig().isSecure()) {
+            ChannelHandler chHandler = pipeline.get("ssl");
+        }
         originResponseReceiver = getOriginResponseReceiver();
         pipeline.addBefore("connectionPoolHandler", OriginResponseReceiver.CHANNEL_HANDLER_NAME, originResponseReceiver);
 

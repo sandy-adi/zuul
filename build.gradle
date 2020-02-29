@@ -1,11 +1,35 @@
+buildscript {
+    repositories {
+        maven {
+            url 'http://artifactory-nonprod.myadp.aws.adp:80/artifactory/gradle-dev'
+        }
+    }
+    dependencies {
+        //Check for the latest version here: http://plugins.gradle.org/plugin/com.jfrog.artifactory
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.7.1"
+    }
+}
 
 plugins {
     id 'nebula.netflixoss' version '8.0.0'
     id 'nebula.dependency-lock' version '8.0.0'
     id "com.google.osdetector" version "1.6.2"
+    id 'maven-publish'
+}
+
+allprojects {
+    apply plugin: "com.jfrog.artifactory"
+    repositories {
+        maven {
+            url 'http://artifactory-nonprod.myadp.aws.adp:80/artifactory/gradle-dev'
+        }
+    }
 }
 
 ext.githubProjectName = rootProject.name
+
+
+version="1.1.2-SNAPSHOT"
 
 
 idea {

@@ -1,3 +1,11 @@
+pluginManagement {
+  repositories {
+    maven {
+      url 'http://artifactory-nonprod.myadp.aws.adp:80/artifactory/gradle-dev'
+    }
+  }
+}
+
 rootProject.name='zuul'
 
 include 'zuul-core'
